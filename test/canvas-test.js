@@ -24,9 +24,9 @@
         blue = candystore.Canvas.create()
             .setChildName('blue')
             .setCanvasAttributes({
-                height         : 50,
-                width          : 'parent',
-                top            : 'center',
+                height         : '50%',
+                width          : '75%',
+                top            : '25%',
                 left           : 'center',
                 backgroundColor: '#0000ff'
             }),

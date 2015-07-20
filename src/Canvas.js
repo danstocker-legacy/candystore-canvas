@@ -58,33 +58,13 @@ troop.postpone(candystore, 'Canvas', function (ns, className) {
                     height = canvasAttributes.getItem('height'),
                     parent = this.parent;
 
-                switch (true) {
-                case backgroundImageElement && width === 'background':
-                    canvasElement.width = backgroundImageElement.width;
-                    break;
+                canvasElement.width = backgroundImageElement && width === 'background' ?
+                    backgroundImageElement.width :
+                    candystore.UnitUtils.parseDimension(width, parent && parent.canvasElement.width);
 
-                case parent && width === 'parent':
-                    canvasElement.width = parent.canvasElement.width;
-                    break;
-
-                case !!width:
-                    canvasElement.width = width;
-                    break;
-                }
-
-                switch (true) {
-                case backgroundImageElement && height === 'background':
-                    canvasElement.height = backgroundImageElement.height;
-                    break;
-
-                case parent && height === 'parent':
-                    canvasElement.height = parent.canvasElement.height;
-                    break;
-
-                case !!width:
-                    canvasElement.height = height;
-                    break;
-                }
+                canvasElement.height = backgroundImageElement && height === 'background' ?
+                    backgroundImageElement.height :
+                    candystore.UnitUtils.parseDimension(height, parent && parent.canvasElement.height);
             },
 
             /** @private */
@@ -219,10 +199,10 @@ troop.postpone(candystore, 'Canvas', function (ns, className) {
                 return {
                     top : top === 'center' ?
                         (parentElement.height - canvasElement.height) / 2 :
-                        top || 0,
+                        candystore.UnitUtils.parseDimension(top, parentElement && parentElement.height) || 0,
                     left: left === 'center' ?
                         (parentElement.width - canvasElement.width) / 2 :
-                        left || 0
+                        candystore.UnitUtils.parseDimension(left, parentElement && parentElement.width) || 0
                 };
             },
 
