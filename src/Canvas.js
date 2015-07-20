@@ -260,6 +260,32 @@ troop.postpone(candystore, 'Canvas', function (ns, className) {
             },
 
             /**
+             * Gets absolute size of the Canvas.
+             * @returns {{width: number, height: number}}
+             */
+            getAbsoluteSize: function () {
+                var canvasElement = this.canvasElement,
+                    absoluteScaling = {
+                        width : 1,
+                        height: 1
+                    },
+                    canvas = this,
+                    relativeScaling;
+
+                while (canvas.parent) {
+                    relativeScaling = canvas.getRelativeScaling();
+                    absoluteScaling.width = absoluteScaling.width * relativeScaling.width;
+                    absoluteScaling.height = absoluteScaling.height * relativeScaling.height;
+                    canvas = canvas.parent;
+                }
+
+                return {
+                    width : canvasElement.width * absoluteScaling.width,
+                    height: canvasElement.height * absoluteScaling.height
+                };
+            },
+
+            /**
              * @returns {candystore.Canvas}
              */
             render: function () {
