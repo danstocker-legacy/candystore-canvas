@@ -34,7 +34,6 @@ troop.postpone(candystore, 'UnitUtils', function () {
 
                 case 'number':
                     return dimension;
-                    break;
 
                 default:
                     return undefined;
