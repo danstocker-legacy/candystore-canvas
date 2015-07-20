@@ -33,8 +33,13 @@ troop.postpone(candystore, 'CanvasUtils', function () {
              * @param {HTMLElement} imageElement
              */
             drawImage: function (canvas, imageElement) {
-                var canvasElement = canvas.canvasElement,
-                    ctx = canvasElement.getContext('2d');
+                var canvasElement = canvas.canvasElement;
+
+                if (!canvasElement.width || !canvasElement.height) {
+                    return;
+                }
+
+                var ctx = canvasElement.getContext('2d');
 
                 ctx.drawImage(imageElement, 0, 0, imageElement.width, imageElement.height);
             },

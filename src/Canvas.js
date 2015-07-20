@@ -77,7 +77,7 @@ troop.postpone(candystore, 'Canvas', function (ns, className) {
                     candystore.CanvasUtils.fillWithColor(this, backgroundColor);
                 }
 
-                if (backgroundImageElement) {
+                if (backgroundImageElement && backgroundImageElement.height && backgroundImageElement.width) {
                     candystore.CanvasUtils.drawImage(this, backgroundImageElement);
                 }
             },
@@ -91,9 +91,14 @@ troop.postpone(candystore, 'Canvas', function (ns, className) {
                     return;
                 }
 
+                var childElement = childCanvas.canvasElement;
+
+                if (!childElement.width || !childElement.height) {
+                    return;
+                }
+
                 var childPosition = childCanvas.getRelativePosition(),
                     childScaling = childCanvas.getRelativeScaling(),
-                    childElement = childCanvas.canvasElement,
                     canvasElement = this.canvasElement,
                     ctx = canvasElement.getContext('2d');
 
