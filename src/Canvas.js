@@ -87,6 +87,10 @@ troop.postpone(candystore, 'Canvas', function (ns, className) {
              * @private
              */
             _renderChildCanvas: function (childCanvas) {
+                if (childCanvas.canvasAttributes.getItem('display') === 'none') {
+                    return;
+                }
+
                 var childPosition = childCanvas.getRelativePosition(),
                     childScaling = childCanvas.getRelativeScaling(),
                     childElement = childCanvas.canvasElement,

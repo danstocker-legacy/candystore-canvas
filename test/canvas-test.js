@@ -32,8 +32,7 @@
                     childWidth     : 100,
                     top            : 'center',
                     left           : 'center',
-                    backgroundColor: '#00ffff',
-                    backgroundImage: 'logo.png'
+                    backgroundColor: '#00ffff'
                 })));
 
     canvasContainer.getCanvasByName('green')
@@ -51,9 +50,12 @@
             height: 150
         });
 
-    canvasContainer.getCanvasByName('teal')
-        .getFirstValue()
-        .setCanvasAttributes({
-            hue: 1.1
-        });
+    setTimeout(function () {
+        canvasContainer.getCanvasByName('teal')
+            .getFirstValue()
+            .setCanvasAttributes({
+                hue            : 1.1,
+                backgroundImage: 'logo.png'
+            });
+    }, 200);
 }());
