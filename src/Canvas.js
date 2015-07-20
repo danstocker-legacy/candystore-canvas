@@ -87,10 +87,8 @@ troop.postpone(candystore, 'Canvas', function (ns, className) {
              * @private
              */
             _renderChildCanvas: function (childCanvas) {
-                var childAttributes = childCanvas.canvasAttributes,
-                    childWidth = childAttributes.getItem('childWidth'),
-                    childHeight = childAttributes.getItem('childHeight'),
-                    childPosition = childCanvas.getRelativePosition(),
+                var childPosition = childCanvas.getRelativePosition(),
+                    childScaling = childCanvas.getRelativeScaling(),
                     childElement = childCanvas.canvasElement,
                     canvasElement = this.canvasElement,
                     ctx = canvasElement.getContext('2d');
@@ -99,8 +97,8 @@ troop.postpone(candystore, 'Canvas', function (ns, className) {
                     childElement,
                     childPosition.left,
                     childPosition.top,
-                    candystore.UnitUtils.parseDimension(childWidth, canvasElement.width) || childElement.width,
-                    candystore.UnitUtils.parseDimension(childHeight, canvasElement.height) || childElement.height);
+                    childElement.width * childScaling.width,
+                    childElement.height * childScaling.height);
             },
 
             /** @private */
@@ -203,11 +201,13 @@ troop.postpone(candystore, 'Canvas', function (ns, className) {
                     canvasElement = this.canvasElement,
                     canvasAttributes = this.canvasAttributes,
                     childWidth = canvasAttributes.getItem('childWidth'),
-                    childHeight = canvasAttributes.getItem('childHeight');
+                    childHeight = canvasAttributes.getItem('childHeight'),
+                    xScaling = candystore.UnitUtils.parseDimension(childWidth, parentElement && parentElement.width) / canvasElement.width,
+                    yScaling = candystore.UnitUtils.parseDimension(childHeight, parentElement && parentElement.height) / canvasElement.height;
 
                 return {
-                    width : (candystore.UnitUtils.parseDimension(childWidth, parentElement && parentElement.width) || canvasElement.width) / canvasElement.width,
-                    height: (candystore.UnitUtils.parseDimension(childHeight, parentElement && parentElement.height) || canvasElement.height) / canvasElement.height
+                    width : xScaling || yScaling || 1,
+                    height: yScaling || xScaling || 1
                 };
             },
 
@@ -220,14 +220,15 @@ troop.postpone(candystore, 'Canvas', function (ns, className) {
                     canvasElement = this.canvasElement,
                     canvasAttributes = this.canvasAttributes,
                     top = canvasAttributes.getItem('top'),
-                    left = canvasAttributes.getItem('left');
+                    left = canvasAttributes.getItem('left'),
+                    scaling = this.getRelativeScaling();
 
                 return {
                     top : top === 'center' ?
-                        (parentElement.height - canvasElement.height) / 2 :
+                        (parentElement.height - (canvasElement.height * scaling.width)) / 2 :
                         candystore.UnitUtils.parseDimension(top, parentElement && parentElement.height) || 0,
                     left: left === 'center' ?
-                        (parentElement.width - canvasElement.width) / 2 :
+                        (parentElement.width - (canvasElement.width * scaling.height)) / 2 :
                         candystore.UnitUtils.parseDimension(left, parentElement && parentElement.width) || 0
                 };
             },

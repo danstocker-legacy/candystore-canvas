@@ -14,8 +14,7 @@
             .setCanvasAttributes({
                 width          : 100,
                 height         : 100,
-                childWidth    : '50%',
-                childHeight   : '50%',
+                childWidth     : '30%',
                 top            : 10,
                 left           : 20,
                 backgroundColor: '#00ff00',
@@ -37,7 +36,9 @@
             .setCanvasAttributes({
                 width          : 'background',
                 height         : 'background',
-                left           : 150,
+                childWidth     : 100,
+                top            : 'center',
+                left           : 'center',
                 backgroundColor: '#00ffff',
                 backgroundImage: 'logo.png'
             });
@@ -45,7 +46,8 @@
     candystore.CanvasContainer.create()
         .renderInto(document.body)
         .setCanvas(red
-            .addChild(green));
+            .addChild(green)
+            .addChild(teal));
 
     green
         .addChild(blue)
