@@ -157,7 +157,7 @@ troop.postpone(candystore, 'Canvas', function (ns, className) {
              */
             addToParent: function (parent) {
                 shoeshine.Progenitor.addToParent.call(this, parent);
-                this.setEventPath(this.getLineage().prepend(self.eventPath));
+                this.updateEventPath();
                 return this;
             },
 
@@ -166,7 +166,16 @@ troop.postpone(candystore, 'Canvas', function (ns, className) {
              */
             removeFromParent: function () {
                 shoeshine.Progenitor.removeFromParent.call(this);
-                this.setEventPath([String(this.instanceId)].toPath().prepend(self.eventPath));
+                this.updateEventPath();
+                return this;
+            },
+
+            /**
+             * @returns {candystore.Canvas}
+             */
+            updateEventPath: function () {
+                this.setEventPath(this.getLineage().prepend(self.eventPath));
+                this.children.callOnEachItem('updateEventPath');
                 return this;
             },
 
