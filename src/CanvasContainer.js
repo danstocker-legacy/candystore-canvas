@@ -51,6 +51,7 @@ troop.postpone(candystore, 'CanvasContainer', function (ns, className) {
             },
 
             /**
+             * Sets the Canvas instance that will manifest in the DOM.
              * @param {candystore.Canvas} canvas
              * @returns {candystore.CanvasContainer}
              */
@@ -74,6 +75,24 @@ troop.postpone(candystore, 'CanvasContainer', function (ns, className) {
                 }
 
                 return this;
+            },
+
+            /**
+             * Retrieves a list of Canvas instances inside the current container matching the specified name.
+             * @param {string} canvasName
+             * @returns {sntls.Collection}
+             */
+            getCanvasByName: function (canvasName) {
+                dessert.isString(canvasName, "Invalid canvas name");
+
+                var canvas = this.canvas;
+
+                return canvas ?
+                    canvas.getAllDescendants()
+                        .filterBySelector(function (canvas) {
+                            return canvas.childName === canvasName;
+                        }) :
+                    sntls.Collection.create();
             },
 
             /**
