@@ -87,12 +87,20 @@ troop.postpone(candystore, 'Canvas', function (ns, className) {
              * @private
              */
             _renderChildCanvas: function (childCanvas) {
-                var childPosition = childCanvas.getRelativePosition(),
+                var childAttributes = childCanvas.canvasAttributes,
+                    childWidth = childAttributes.getItem('childWidth'),
+                    childHeight = childAttributes.getItem('childHeight'),
+                    childPosition = childCanvas.getRelativePosition(),
                     childElement = childCanvas.canvasElement,
                     canvasElement = this.canvasElement,
                     ctx = canvasElement.getContext('2d');
 
-                ctx.drawImage(childElement, childPosition.left, childPosition.top);
+                ctx.drawImage(
+                    childElement,
+                    childPosition.left,
+                    childPosition.top,
+                    candystore.UnitUtils.parseDimension(childWidth, canvasElement.width) || childElement.width,
+                    candystore.UnitUtils.parseDimension(childHeight, canvasElement.height) || childElement.height);
             },
 
             /** @private */
@@ -186,6 +194,24 @@ troop.postpone(candystore, 'Canvas', function (ns, className) {
             },
 
             /**
+             * Retrieves the canvas' scaling ratios relative to the parent Canvas instance.
+             * @returns {{width: number, height: number}}
+             */
+            getRelativeScaling: function () {
+                var parent = this.parent,
+                    parentElement = parent && parent.canvasElement,
+                    canvasElement = this.canvasElement,
+                    canvasAttributes = this.canvasAttributes,
+                    childWidth = canvasAttributes.getItem('childWidth'),
+                    childHeight = canvasAttributes.getItem('childHeight');
+
+                return {
+                    width : (candystore.UnitUtils.parseDimension(childWidth, parentElement && parentElement.width) || canvasElement.width) / canvasElement.width,
+                    height: (candystore.UnitUtils.parseDimension(childHeight, parentElement && parentElement.height) || canvasElement.height) / canvasElement.height
+                };
+            },
+
+            /**
              * Retrieves the canvas' position relative to the parent Canvas instance.
              * @returns {{top: number, left: number}}
              */
@@ -216,13 +242,17 @@ troop.postpone(candystore, 'Canvas', function (ns, className) {
                         left: 0
                     },
                     canvas = this,
-                    relativePosition;
+                    parent = canvas.parent,
+                    relativePosition,
+                    relativeScaling;
 
-                while (canvas.parent) {
+                while (parent) {
                     relativePosition = canvas.getRelativePosition();
-                    result.top += relativePosition.top;
-                    result.left += relativePosition.left;
+                    relativeScaling = parent.getRelativeScaling();
+                    result.top += relativePosition.top * relativeScaling.height;
+                    result.left += relativePosition.left * relativeScaling.width;
                     canvas = canvas.parent;
+                    parent = canvas.parent;
                 }
 
                 return result;
