@@ -60,11 +60,11 @@ troop.postpone(candystore, 'Canvas', function (ns, className) {
 
                 canvasElement.width = backgroundImageElement && width === 'background' ?
                     backgroundImageElement.width :
-                    candystore.UnitUtils.parseDimension(width, parent && parent.canvasElement.width);
+                    candystore.UnitUtils.parseDimension(width, parent && parent.canvasElement.width) || canvasElement.width;
 
                 canvasElement.height = backgroundImageElement && height === 'background' ?
                     backgroundImageElement.height :
-                    candystore.UnitUtils.parseDimension(height, parent && parent.canvasElement.height);
+                    candystore.UnitUtils.parseDimension(height, parent && parent.canvasElement.height) || canvasElement.height;
             },
 
             /** @private */

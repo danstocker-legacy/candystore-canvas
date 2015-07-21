@@ -16,13 +16,34 @@ troop.postpone(candystore, 'CanvasContainer', function (ns, className) {
      * @extends shoeshine.Widget
      */
     candystore.CanvasContainer = self
+        .addConstants(/** @lends candystore.CanvasContainer */{
+            /** @constant */
+            EVENT_CANVAS_UPDATE: 'canvas-update'
+        })
+        .addPrivateMethods(/** @lends candystore.CanvasContainer# */{
+            /** @private */
+            _updateCanvas: function () {
+                var canvas = this.canvas,
+                    element = this.getElement(),
+                    canvasElement = canvas && canvas.canvasElement;
+
+                if (canvas && element) {
+                    canvasElement.width = element.clientWidth;
+                    canvasElement.height = element.clientHeight;
+                    canvas.render();
+                    element.appendChild(canvasElement);
+
+                    this.triggerSync(this.EVENT_CANVAS_UPDATE);
+                }
+            }
+        })
         .addMethods(/** @lends candystore.CanvasContainer# */{
             /** @ignore */
             init: function () {
                 base.init.call(this);
 
                 this.elevateMethods(
-                    'reRender',
+                    '_updateCanvas',
                     'onBackgroundLoad',
                     'onAttributeChange');
 
@@ -34,20 +55,13 @@ troop.postpone(candystore, 'CanvasContainer', function (ns, className) {
                 /**
                  * @type {sntls.Debouncer}
                  */
-                this.reRenderDebouncer = this.reRender.toDebouncer();
+                this.updateCanvasDebouncer = this._updateCanvas.toDebouncer();
             },
 
             /** @ignore */
             afterRender: function () {
                 base.afterRender.call(this);
-
-                var canvas = this.canvas,
-                    element = this.getElement();
-
-                if (canvas) {
-                    canvas.render();
-                    element.appendChild(canvas.canvasElement);
-                }
+                this._updateCanvas();
             },
 
             /**
@@ -70,9 +84,7 @@ troop.postpone(candystore, 'CanvasContainer', function (ns, className) {
                     .subscribeTo(candystore.Canvas.EVENT_BACKGROUND_LOAD, this.onBackgroundLoad)
                     .subscribeTo(candystore.Canvas.EVENT_ATTRIBUTE_CHANGE, this.onAttributeChange);
 
-                if (this.getElement()) {
-                    this.reRender();
-                }
+                this._updateCanvas();
 
                 return this;
             },
@@ -101,7 +113,7 @@ troop.postpone(candystore, 'CanvasContainer', function (ns, className) {
              */
             onBackgroundLoad: function (event) {
                 var link = evan.pushOriginalEvent(event);
-                this.reRenderDebouncer.runDebounced(16);
+                this.updateCanvasDebouncer.runDebounced(16);
                 link.unLink();
             },
 
@@ -111,7 +123,7 @@ troop.postpone(candystore, 'CanvasContainer', function (ns, className) {
              */
             onAttributeChange: function (event) {
                 var link = evan.pushOriginalEvent(event);
-                this.reRenderDebouncer.runDebounced(16);
+                this.updateCanvasDebouncer.runDebounced(16);
                 link.unLink();
             }
         });
